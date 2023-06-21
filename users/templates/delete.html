@@ -1,0 +1,32 @@
+{% extends 'master.html' %}
+{% include 'header.html' %}
+
+{% block title %} Delete {% endblock %}
+
+{% block body %}
+<div class="container">
+    <table class="table">
+        <thead style="background-color: brown;color: aliceblue;">
+            <th>Id</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Description</th>
+            <th>Created_at</th>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{user.id}}</td>
+                <td>{{user.name}}</td>
+                <td>{{user.age}}</td>
+                <td>{{user.description}}</td>
+                <td>{{user.created_at}}</td>
+        </tbody>
+    </table>
+
+    <form action='' method="post">
+        Confirmar si desea eliminar el dato
+        <input type="submit" value="YES" class="btn btn-danger">
+        <a href='/api/users'>Cancel</a>
+    </form>
+</div>
+{% endblock %}
