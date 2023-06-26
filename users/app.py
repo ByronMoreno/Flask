@@ -20,7 +20,11 @@ def get_database():
 #Consultar todos los usuarios
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('create.html')
+
+@app.route('/api/users/create')
+def create():
+    return render_template('create.html')
 
 #Consultar todos los usuarios
 @app.get('/app/users')
@@ -70,6 +74,44 @@ def delete_users(id):
             return redirect('/api/users')
         #abort(404)
     return render_template('delete.html', user=user_deleting)
+
+#Update
+#Delete
+@app.route('/<int:id>/edit', methods=['GET','POST'])
+def update_user(id):
+
+    #Paso 1, conectar a la base de datos
+    conn = get_database()
+    #Paso 2 definir el cursor
+    cursor = conn.cursor(cursor_factory=extras.RealDictCursor)
+    #Paso 3 enviar la sentencia sql al cursor
+    cursor.execute("select * from users where id = %s", (id,)) 
+    # Paso 4 sacar datos a pantalla
+    user_select = cursor.fetchone()
+    cursor.close()
+    conn.close()
+
+    #Paso 1 obtenr los datos del html
+    if request.method == 'POST':
+        nombre = request.form['name1']
+        edad = request.form['age']
+        descripcion = request.form['description']
+        #Conectar a la base de datos
+        conn = get_database()
+        #Paso 2 definir el cursor
+        cursor = conn.cursor(cursor_factory=extras.RealDictCursor)
+        #Paso 3 enviar la sentencia sql al cursor
+        cursor.execute("UPDATE users SET name=%s, age=%s, description=%s WHERE id=%s RETURNING *",
+                    (nombre, edad, descripcion, id))
+        #Paso 4 sacar datos a pantalla
+        user_updating = cursor.fetchone()    
+        if user_updating:
+            conn.commit()
+            cursor.close()
+            conn.close()
+            return redirect('/api/users')
+        #abort(404)
+    return render_template('update.html', user=user_select)
 
 
 #Para colocar en modo debug, modo desarrallador
