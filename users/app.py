@@ -18,7 +18,7 @@ def get_database():
     return conn
 
 #Consultar todos los usuarios
-@app.route('/')
+@app.route('/en')
 def home():
     return render_template('create.html')
 
@@ -76,7 +76,6 @@ def delete_users(id):
     return render_template('delete.html', user=user_deleting)
 
 #Update
-#Delete
 @app.route('/<int:id>/edit', methods=['GET','POST'])
 def update_user(id):
 
@@ -113,6 +112,31 @@ def update_user(id):
         #abort(404)
     return render_template('update.html', user=user_select)
 
+#Create
+@app.route("/", methods=['GET','POST'])
+def create_user():
+    if request.method == 'GET':
+        return render_template('create.html')
+    #Paso 1 obtenr los datos del html
+    if request.method == 'POST':
+        nombre = request.form['name1']
+        edad = request.form['age']
+        descripcion = request.form['description']
+        #Conectar a la base de datos
+        conn = get_database()
+        #Paso 2 definir el cursor
+        cursor = conn.cursor(cursor_factory=extras.RealDictCursor)
+        #Paso 3 enviar la sentencia sql al cursor
+        cursor.execute('INSERT INTO users(name,age,description) VALUES (%s,%s,%s) RETURNING *',
+                (nombre, edad, descripcion))
+        #Paso 4 sacar datos a pantalla
+        user_creating = cursor.fetchone()    
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return redirect('/')
+        #abort(404)
+    
 
 #Para colocar en modo debug, modo desarrallador
 if __name__ == '__main__':

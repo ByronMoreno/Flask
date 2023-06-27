@@ -33,11 +33,47 @@
           <a href="/{{user.id}}/edit"> <i class="fas fa-edit"></i></a> </span>
            | <span style="font-size: 24px;color:red;">  
              <a href="/{{user.id}}/delete"> <i class="fas fa-trash-alt"></i></a></span></td>
+             <td><button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#myOutput">Output</button></td>
        {% endfor %}
+       
       </tbody>
     </table>
     <a href='/api/users/create' class="btn btn-dark">Crear</a>
-     
+
+    <select>
+      {% for user in users %}
+        <option value="value"+{{user.name}}>{{user.name}}</option>
+      {% endfor %}
+    </select>  
    </div>
+   <!--https://gist.github.com/gbaldera/3751301-->
+   <!--https://jinja.palletsprojects.com/en/3.1.x/templates/
+https://www.thepythoncode.com/code/front-end-of-crud-flask-app-using-jinja-and-bootstrap
+https://www.thepythoncode.com/article/front-end-of-crud-flask-app-using-jinja-and-bootstrap
+-->
+
+   <!-- Modal -->
+   {% for user in users %}
+   <!-- Modal -->
+    <div class="modal fade" id="myOutput" role="dialog">
+      <div class="modal-dialog modal-lg">
+  
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Task Output</h4>
+          </div>
+          <div class="modal-body">
+            <p>{{ user.description }}</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+  
+      </div>
+    </div>
+  {% endfor %}
 
 {% endblock %}
